@@ -1,6 +1,7 @@
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 const PI = Math.PI;
+var renderMode = 0;
 // canvas is 320*200
 requestAnimationFrame(frameFunc);
 var upKey = false, downKey = false, leftKey = false, rightKey = false;
@@ -41,15 +42,19 @@ function frameFunc(){
 
 var wallDirTest = 0;
 var wallDirDist = 0;
-var inViewTest = false;
-
+var pointsDir = [];
+var pointsDist = [];
+if(renderMode == 0){
     ctx.strokeStyle = "#ffffff";
     ctx.beginPath();
+}
 for(var wallOn = 0; wallOn<walls.length; wallOn+=2){
-    ctx.moveTo(walls[wallOn][0], walls[wallOn][1]);
+    if(renderMode == 0){
+    ctx.moveTo(walls[wallOn][0], walls[wallOn][1]);}
     for(var i = 0; i<walls[wallOn].length;i++){
-        ctx.lineTo(walls[wallOn][i],walls[wallOn][i+1]);
-        if(true) {
+        if(renderMode == 0){
+        ctx.lineTo(walls[wallOn][i],walls[wallOn][i+1]);}
+
 
                 wallDirTest = Math.atan2(walls[wallOn][i + 1] - playerY, walls[wallOn][i] - playerX);
 
@@ -57,37 +62,72 @@ for(var wallOn = 0; wallOn<walls.length; wallOn+=2){
             var angDiff = (playerDirection - wallDirTest + PI + 2*PI) % (2*PI) - PI;
 
             if(angDiff>0-playerFOV/2&&angDiff<playerFOV/2){
-                ctx.beginPath();
-                ctx.rect(walls[wallOn][i]-2 ,walls[wallOn][i+1]-2, 4, 4);
-                ctx.fillStyle = "#ff0000";
-                ctx.fill();
-                ctx.closePath();
-            }
+
+                if(!pointsDir.includes(wallDirTest)) {
+
+
+                    pointsDir.push(wallDirTest);
+                    pointsDist.push(wallDirDist);
+                }
+
         }
     }
 
     }
-    ctx.closePath();
-    ctx.stroke();
+    if(renderMode == 0) {
+        ctx.closePath();
+        ctx.stroke();
+    }
 playerDirection = playerDirection%(2*PI);
 
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#ffffff";
-    ctx.moveTo(playerX, playerY);
-    ctx.lineTo(playerX+(Math.cos(playerDirection-playerFOV/2)*8000), playerY+(Math.sin(playerDirection-playerFOV/2)*8000));
-    ctx.moveTo(playerX, playerY);
-    ctx.lineTo(playerX+(Math.cos(playerDirection+playerFOV/2)*8000), playerY+(Math.sin(playerDirection+playerFOV/2)*8000));
-    ctx.stroke();
+    if(renderMode == 0) {
+        ctx.beginPath();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#ffffff";
+        ctx.moveTo(playerX, playerY);
+        ctx.lineTo(playerX + (Math.cos(playerDirection - playerFOV / 2) * 8000), playerY + (Math.sin(playerDirection - playerFOV / 2) * 8000));
+        ctx.moveTo(playerX, playerY);
+        ctx.lineTo(playerX + (Math.cos(playerDirection + playerFOV / 2) * 8000), playerY + (Math.sin(playerDirection + playerFOV / 2) * 8000));
+        ctx.stroke();
 
-    if(inViewTest){
+    for(var pOn = 0; pOn<pointsDir.length; pOn++){
     ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#24f5b3";
     ctx.moveTo(playerX, playerY);
-    ctx.lineTo(playerX+(Math.cos(wallDirTest)*wallDirDist), playerY+(Math.sin(wallDirTest)*wallDirDist));
+    ctx.lineTo(playerX+(Math.cos(pointsDir[pOn])*pointsDist[pOn]), playerY+(Math.sin(pointsDir[pOn])*pointsDist[pOn]));
     ctx.stroke();
     }
+    }
+
+
+    var newPointsDir = pointsDir;
+    var newPointsDist = pointsDist;
+
+    for(var i = 0; i<newPointsDist.length; i++ ){
+        for(var j = i+1; j<newPointsDist.length; j++){
+            if(newPointsDist[i]<newPointsDist[j]){
+                var hold = newPointsDist[i];
+                newPointsDist[i] = newPointsDist[j];
+                newPointsDist[j] = hold;
+
+                var hold2 = newPointsDir[i];
+                newPointsDir[i] = newPointsDir[j];
+                newPointsDir[j] = hold2;
+                console.log("did thing")
+            }
+        }
+    }
+
+    console.log(pointsDir)
+    console.log(newPointsDir)
+        if(renderMode ==1){
+
+
+
+        }
+
+
     if(leftKey)
         playerDirection-=0.02;
     if(rightKey)
