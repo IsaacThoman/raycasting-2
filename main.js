@@ -6,7 +6,8 @@ var renderMode = 1;
 // canvas is 320*200
 requestAnimationFrame(frameFunc);
 var upKey = false, downKey = false, leftKey = false, rightKey = false;
-var playerX = 150, playerY = 150, playerDirection = 0, playerSpeed = 2, playerFOV = 70/180*3.14;
+var playerX = 171, playerY = 130, playerDirection = -2.5, playerSpeed = 2, playerFOV = 70/180*3.14;
+var magicViewNumber = 0.6;
 
 var walls = []; walls.push([100,100,100,25,25,25,25,100]);
 document.addEventListener("keydown", keyDownHandler, false);
@@ -47,16 +48,24 @@ var pointsDir = [];
 var pointsDist = [];
 
 
+//for actual rendering
+    var wallsToRender = [];
+
 if(renderMode == 0){ //starts drawing walls in mode0
     ctx.strokeStyle = "#ffffff";
     ctx.beginPath();
 }
+
+    var allRenderWalls1Dir = [];
+    var allRenderWalls1Dist = [];
+
 for(var wallOn = 0; wallOn<walls.length; wallOn+=2){
-    if(renderMode == 0){
-    ctx.moveTo(walls[wallOn][0], walls[wallOn][1]);}  //draws wall points in mode0
+    if(renderMode == 0)ctx.moveTo(walls[wallOn][0], walls[wallOn][1]);  //draws wall points in mode0
+    var thisRenderWall1Dir = [];
+    var thisRenderWall1Dist = [];
     for(var i = 0; i<walls[wallOn].length;i++){
-        if(renderMode == 0){
-        ctx.lineTo(walls[wallOn][i],walls[wallOn][i+1]);}
+
+        if(renderMode == 0) ctx.lineTo(walls[wallOn][i],walls[wallOn][i+1]);
 
 
                 wallDirTest = Math.atan2(walls[wallOn][i + 1] - playerY, walls[wallOn][i] - playerX);
@@ -68,15 +77,20 @@ for(var wallOn = 0; wallOn<walls.length; wallOn+=2){
 
                 if(!pointsDir.includes(wallDirTest)) {
 
-
                     pointsDir.push(wallDirTest);
                     pointsDist.push(wallDirDist);
+
+                    thisRenderWall1Dir.push(angDiff);
+                    thisRenderWall1Dist.push(wallDirDist);
+
                 }
 
         }
     }
-
+    allRenderWalls1Dir.push(thisRenderWall1Dir);
+    allRenderWalls1Dist.push(thisRenderWall1Dist);
     }
+//console.log(allRenderWalls1Dir[0])
     if(renderMode == 0) {
         ctx.closePath(); //close wall drawing
         ctx.stroke();
@@ -124,24 +138,31 @@ playerDirection = playerDirection%(2*PI);
     }
 
         if(renderMode ==1){
-            ctx.beginPath();
-            ctx.lineWidth = 0;
-            ctx.strokeStyle = "#24f5b3";
-            ctx.fillStyle = "#24f5b3";
-            console.log("new poly")
-            for(var i = 0; i<pointsDist.length; i++){
-                    var xVal = pointsDist[i]/(2*PI)*cWidth;
-                    var height = 50;
-                  //  xVal+=171
-                    ctx.lineTo(xVal,cHeight/2-height);
-                    ctx.lineTo(xVal,cHeight/2+height)
-                console.log(xVal+","+(+cHeight/2-height))
-                console.log(xVal+","+(cHeight/2+height))
+            for(var i = 0; i<allRenderWalls1Dir.length; i++){
+                ctx.beginPath();
+                ctx.fillStyle = "#fff000";
+                ctx.strokeStyle = "#24f5b3";
 
 
+                for(var j = 0; j<allRenderWalls1Dir[i].length; j++){
+                    var pointDisplayX = (0-allRenderWalls1Dir[i][j] + magicViewNumber) /(magicViewNumber*2)*cWidth; //don't ask me how i got here
+
+                    console.log(pointDisplayX)
+
+
+if(j%2==0){
+    ctx.lineTo(pointDisplayX,70);
+    ctx.lineTo(pointDisplayX,90);}
+else {
+    ctx.lineTo(pointDisplayX, 90);
+    ctx.lineTo(pointDisplayX, 70);
+}
+
+                    // }
+                }
+                ctx.fill();
+                ctx.closePath();
             }
-            ctx.fill();
-            ctx.closePath();
 
         }
 
