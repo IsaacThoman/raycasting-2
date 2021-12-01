@@ -6,7 +6,7 @@ var renderMode = 1;
 // canvas is 320*200
 requestAnimationFrame(frameFunc);
 var upKey = false, downKey = false, leftKey = false, rightKey = false;
-var playerX = 171, playerY = 130, playerDirection = -2.5, playerSpeed = 2, playerFOV = 70/180*3.14;
+var playerX = 171, playerY = 130, playerDirection = -2.5, playerSpeed = 2, playerFOV = 180/180*3.14;
 var magicViewNumber = 0.6;
 
 var walls = []; walls.push([100,100,100,25,25,25,25,100]);
@@ -20,7 +20,14 @@ function keyDownHandler(e) {
         leftKey = true;
     if (e.keyCode === 39)  //right
         rightKey = true;
+    if (e.keyCode === 81)
+        if (renderMode == 1)
+            renderMode = 0;
+        else
+            renderMode = 1;
+
 }
+
 document.addEventListener("keyup", keyUpHandler, false);
 function keyUpHandler(e) {
     if (e.keyCode === 38)  //up
@@ -140,27 +147,36 @@ playerDirection = playerDirection%(2*PI);
         if(renderMode ==1){
             for(var i = 0; i<allRenderWalls1Dir.length; i++){
                 ctx.beginPath();
-                ctx.fillStyle = "#fff000";
-                ctx.strokeStyle = "#24f5b3";
+                ctx.fillStyle = "#fff000";ctx.strokeStyle = "#ff0000";
 
-
-                for(var j = 0; j<allRenderWalls1Dir[i].length; j++){
+                for(var j = 1; j<allRenderWalls1Dir[i].length; j++){
                     var pointDisplayX = (0-allRenderWalls1Dir[i][j] + magicViewNumber) /(magicViewNumber*2)*cWidth; //don't ask me how i got here
+                    var lastPointDisplayX = (0-allRenderWalls1Dir[i][j-1] + magicViewNumber) /(magicViewNumber*2)*cWidth; //don't ask me how i got here
+                    var thisPointDist = 5000/allRenderWalls1Dist[i][j]
+                    var lastThisPointDist = 5000/allRenderWalls1Dist[i][j-1]
+                    var lowerY = (cHeight/2)-thisPointDist
+                    var upperY = (cHeight/2)+thisPointDist
 
-                    console.log(pointDisplayX)
+                    var lastLowerY = (cHeight/2)-lastThisPointDist
+                    var lastUpperY = (cHeight/2)+lastThisPointDist
+            console.log(thisPointDist)
+
+             //       console.log(pointDisplayX)
+                    ctx.lineTo(lastPointDisplayX,lastUpperY);
+                    ctx.lineTo(lastPointDisplayX,lastLowerY);
+                    ctx.lineTo(pointDisplayX,lowerY);
+
+                    ctx.lineTo(pointDisplayX,upperY);
+           //         ctx.lineTo(lastPointDisplayX,70);
+                    ctx.fill();
 
 
-if(j%2==0){
-    ctx.lineTo(pointDisplayX,70);
-    ctx.lineTo(pointDisplayX,90);}
-else {
-    ctx.lineTo(pointDisplayX, 90);
-    ctx.lineTo(pointDisplayX, 70);
-}
+
 
                     // }
                 }
                 ctx.fill();
+              //  ctx.stroke();
                 ctx.closePath();
             }
 
