@@ -162,11 +162,15 @@ playerDirection = playerDirection%(2*PI);
             console.log(thisPointDist)
 
              //       console.log(pointDisplayX)
-                    ctx.lineTo(lastPointDisplayX,lastUpperY);
-                    ctx.lineTo(lastPointDisplayX,lastLowerY);
-                    ctx.lineTo(pointDisplayX,lowerY);
+                    
 
+                    ctx.lineTo(lastPointDisplayX,lastUpperY);
                     ctx.lineTo(pointDisplayX,upperY);
+                    ctx.lineTo(pointDisplayX,lowerY);
+                    ctx.lineTo(lastPointDisplayX,lastLowerY);
+
+
+
            //         ctx.lineTo(lastPointDisplayX,70);
                     ctx.fill();
 
