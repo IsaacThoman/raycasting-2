@@ -9,7 +9,7 @@ var upKey = false, downKey = false, leftKey = false, rightKey = false;
 var playerX = 171, playerY = 130, playerDirection = -2.5, playerSpeed = 2, playerFOV = 180/180*3.14;
 var magicViewNumber = 0.6;
 
-var walls = []; walls.push([100,100,100,25,25,25,25,100]);
+var walls = []; walls.push([100,100,100,25,25,25,25,100,100,99]);
 document.addEventListener("keydown", keyDownHandler, false);
 function keyDownHandler(e) {
     if (e.keyCode === 38)  //up
@@ -145,6 +145,9 @@ playerDirection = playerDirection%(2*PI);
     }
 
         if(renderMode ==1){
+            ctx.fillStyle = "#fff000";
+            var anotherFunnyDebugThing = [];
+
             for(var i = 0; i<allRenderWalls1Dir.length; i++){
                 ctx.beginPath();
                 ctx.fillStyle = "#fff000";ctx.strokeStyle = "#ff0000";
@@ -162,28 +165,33 @@ playerDirection = playerDirection%(2*PI);
             console.log(thisPointDist)
 
              //       console.log(pointDisplayX)
-                    
+
 
                     ctx.lineTo(lastPointDisplayX,lastUpperY);
                     ctx.lineTo(pointDisplayX,upperY);
                     ctx.lineTo(pointDisplayX,lowerY);
                     ctx.lineTo(lastPointDisplayX,lastLowerY);
 
-
-
-           //         ctx.lineTo(lastPointDisplayX,70);
+                    anotherFunnyDebugThing = [lastPointDisplayX,lastUpperY,pointDisplayX,upperY,pointDisplayX,lowerY,lastPointDisplayX,lastLowerY]
+                    ctx.fillStyle = "#fff000";
                     ctx.fill();
-
-
-
 
                     // }
                 }
-                ctx.fill();
-              //  ctx.stroke();
+
+              //  ctx.fill();
+                ctx.stroke();
                 ctx.closePath();
             }
 
+            //draw j0 corners
+            ctx.beginPath();
+            ctx.fillStyle = "#ff0000"
+            for(var i = 0; i<anotherFunnyDebugThing.length; i+=2)
+            ctx.rect(anotherFunnyDebugThing[i]-3, anotherFunnyDebugThing[i+1]-3, 6, 6);
+
+            ctx.fill();
+            ctx.closePath();
         }
 
 
