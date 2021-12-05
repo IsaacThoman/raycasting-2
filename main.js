@@ -162,15 +162,22 @@ playerDirection = playerDirection%(2*PI);
 
                     var lastLowerY = (cHeight/2)-lastThisPointDist
                     var lastUpperY = (cHeight/2)+lastThisPointDist
+                    //draw a human face on this face
+                    ctx.moveTo(lastPointDisplayX,lastLowerY); //wait, what the fuck is this?
+                    ctx.lineTo(lastPointDisplayX,lastUpperY); //right, this is the same as the last line, but with a different y value
+                    ctx.lineTo(pointDisplayX,upperY); // oh yes, this is the same as the last line, but with a different x value
+                    ctx.lineTo(pointDisplayX,lowerY); // i love this line. it's the same as the last line, but with a different y value
+                    ctx.lineTo(lastPointDisplayX,lastLowerY);
+                    ctx.closePath();
+
+
+
             console.log(thisPointDist)
 
              //       console.log(pointDisplayX)
 
 
-                    ctx.lineTo(lastPointDisplayX,lastUpperY);
-                    ctx.lineTo(pointDisplayX,upperY);
-                    ctx.lineTo(pointDisplayX,lowerY);
-                    ctx.lineTo(lastPointDisplayX,lastLowerY);
+
 
                     anotherFunnyDebugThing = [lastPointDisplayX,lastUpperY,pointDisplayX,upperY,pointDisplayX,lowerY,lastPointDisplayX,lastLowerY]
                     ctx.fillStyle = "#fff000";
